@@ -1,0 +1,11 @@
+langchain 
+langchain-core
+langchain-mistralai
+langchain-community
+python-dotenv
+chromadb
+sentence_transformers
+pypdf
+unstructured
+tiktoken
+beautifulsoup4
