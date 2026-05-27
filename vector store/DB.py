@@ -1,44 +1,34 @@
-from dotenv import load_dotenv
-
 from langchain_community.vectorstores import Chroma
-from langchain_core.documents import Document
-from langchain_mistralai import ChatMistralAI, MistralAIEmbeddings
+from langchain_openai import OpenAIEmbeddings
+from dotenv import load_dotenv
 
 load_dotenv()
 
-# Create documents
+from langchain_core.documents import Document
+
 docs = [
-    Document(
-        page_content="What is RAG?",
-        metadata={"source": "notes.txt"}
-    ),
-    Document(
-        page_content=(
-            "RAG stands for Retrieval Augmented Generation. "
-            "It is a technique that combines retrieval-based "
-            "methods with generative models to improve the "
-            "quality and relevance of generated content."
-        ),
-        metadata={"source": "notes.txt"}
-    )
+    Document(page_content="Python is widely used in Artificial Intelligence.", metadata={"source": "AI_book"}),
+    Document(page_content="Pandas is used for data analysis in Python.", metadata={"source": "DataScience_book"}),
+    Document(page_content="Neural networks are used in deep learning.", metadata={"source": "DL_book"}),
 ]
 
-# Mistral Embeddings Model
-embeddings_model = MistralAIEmbeddings(
-    model="mistral-embed"
-)
+embedding_model = OpenAIEmbeddings()
 
-# Create Chroma Vector Store
 vectorstore = Chroma.from_documents(
-    documents=docs,
-    embedding=embeddings_model,
-    collection_name="rag_notes"
+    documents = docs,
+    embedding= embedding_model,
+    persist_directory= "chroma-db"
 )
 
-# Test retrieval
-retriever = vectorstore.as_retriever()
+result = vectorstore.similarity_search("what is used for data analysis?",k=2)
 
-results = retriever.invoke("What is RAG?")
+for r in result:
+    print(r.page_content)
+    print(r.metadata)
 
-for doc in results:
-    print(doc.page_content)
+retriver = vectorstore.as_retriever()
+
+docs = retriver.invoke("Explain deep learning")
+
+for d in docs:
+    print(d.page_content)

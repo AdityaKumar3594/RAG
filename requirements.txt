@@ -9,3 +9,4 @@ pypdf
 unstructured
 tiktoken
 beautifulsoup4
+langchain_huggingface
